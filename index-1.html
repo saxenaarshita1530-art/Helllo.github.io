@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>A Little Something For You 💗</title>
+<style>
+:root{--pink:#ffd5e2;--deep:#b51f4a;--red:#d92750;--ink:#673044}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Trebuchet MS","Segoe UI",sans-serif;background:var(--pink);color:var(--ink)}
+body{overflow-x:hidden}
+.screen{position:fixed;inset:0;min-height:100dvh;display:grid;place-items:center;padding:22px;opacity:0;visibility:hidden;transform:translateY(24px) scale(.985);transition:opacity .55s ease,transform .65s cubic-bezier(.2,.8,.2,1),visibility .55s;overflow:auto}
+.screen.active{opacity:1;visibility:visible;transform:none}
+.screen.exit{opacity:0;transform:translateY(-22px) scale(.99)}
+.center{text-align:center;width:min(900px,100%)}
+h1{font-size:clamp(27px,7vw,52px);line-height:1.12;margin:8px 0 14px}
+h2{font-size:clamp(24px,5vw,36px);margin:0 0 18px}
+p{font-size:17px;line-height:1.65}
+.subtle{font-size:13px;opacity:.68}
+.heart{position:fixed;bottom:-30px;font-size:18px;opacity:.55;animation:floatUp linear infinite;pointer-events:none}
+@keyframes floatUp{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+.envelope-wrap{width:min(390px,88vw);height:290px;margin:24px auto 10px;perspective:1100px;cursor:pointer;position:relative}
+.envelope{position:absolute;left:0;right:0;bottom:18px;height:220px;background:#d72b50;border-radius:10px;box-shadow:0 22px 38px #8b365044;overflow:visible}
+.envelope-body{position:absolute;inset:0;background:linear-gradient(135deg,#e7345a,#c92149);border-radius:10px;z-index:3}
+.envelope-body:before,.envelope-body:after{content:"";position:absolute;bottom:0;width:52%;height:100%;background:#c82148}
+.envelope-body:before{left:0;clip-path:polygon(0 0,100% 100%,0 100%)}.envelope-body:after{right:0;clip-path:polygon(100% 0,100% 100%,0 100%)}
+.flap{position:absolute;top:0;left:0;width:100%;height:150px;background:#ed4165;clip-path:polygon(0 0,100% 0,50% 74%);transform-origin:top center;z-index:5;transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.letter-peek{position:absolute;background:#fff;width:80%;height:170px;left:10%;top:25px;border-radius:5px;z-index:2;transition:transform 1s cubic-bezier(.2,.8,.2,1);box-shadow:0 2px 8px #73304022}
+.seal{position:absolute;z-index:7;top:78px;left:50%;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#ffd84d;border:5px solid #edb92d;box-shadow:0 5px 12px #8d4b3933;font-size:27px;transition:.5s}
+.envelope.open .flap{transform:rotateX(180deg)}.envelope.open .letter-peek{transform:translateY(-105px)}.envelope.open .seal{opacity:0;transform:translateX(-50%) scale(.5)}
+.open-label{font-weight:bold;color:var(--deep);letter-spacing:.3px}
+.paper{position:relative;width:min(760px,96vw);max-height:88dvh;overflow:auto;background:#fffdfb;border-radius:10px;padding:60px 34px 32px;box-shadow:0 24px 55px #8b3d5140;text-align:left}
+.paper:after{content:"";position:absolute;inset:0;border-radius:10px;pointer-events:none;box-shadow:inset 0 0 0 1px #ead7dc}
+.top-balloons{position:absolute;top:12px;left:0;right:0;display:flex;justify-content:center;gap:11px}
+.balloon{width:34px;height:43px;border-radius:50%;position:relative;display:inline-block}
+.balloon:after{content:"";position:absolute;left:50%;top:41px;width:1px;height:19px;background:#777}
+.yellow{background:#ffd84d}.red{background:#ef476f}.orange{background:#ff9e43}.green{background:#9ddd78}
+.edit{outline:2px dashed transparent;border-radius:7px;transition:.2s}
+.edit:focus{outline-color:#f1a4b7;background:#fff7fa}
+.letterbox{width:100%;min-height:340px;border:0;outline:0;background:transparent;resize:vertical;font:18px/1.8 Georgia,serif;color:#4c3440}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px}
+input[type=file]{max-width:100%;font-size:14px}
+.btn{border:0;border-radius:999px;padding:12px 22px;background:var(--deep);color:white;font-weight:bold;font-size:15px;cursor:pointer;box-shadow:0 7px 16px #8d234233;transition:.2s}
+.btn:hover{transform:translateY(-2px)}.btn.light{background:#fff;color:var(--deep);border:1px solid #e8aabd}
+.nav{display:flex;justify-content:center;margin-top:18px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px;margin:16px 0}
+.gallery img{width:100%;height:165px;object-fit:cover;border-radius:12px;box-shadow:0 5px 14px #74404a25}
+.big-row{display:flex;justify-content:center;gap:clamp(15px,5vw,65px);margin:45px 0 55px;flex-wrap:wrap}
+.big-balloon{width:82px;height:105px;border-radius:50%;position:relative;cursor:pointer;display:grid;place-items:center;font-size:25px;box-shadow:inset -8px -10px 15px #00000012,0 9px 16px #6b394833;animation:sway 3s ease-in-out infinite}
+.big-balloon:nth-child(2){animation-delay:.25s}.big-balloon:nth-child(3){animation-delay:.5s}.big-balloon:nth-child(4){animation-delay:.75s}
+.big-balloon:after{content:"";position:absolute;bottom:-43px;left:50%;height:44px;width:1px;background:#777}
+@keyframes sway{50%{transform:translateY(-7px) rotate(2deg)}}
+.balloon-note{text-align:center;font-weight:bold}
+.cat{font-size:clamp(90px,24vw,145px);filter:drop-shadow(0 10px 12px #7a425322);animation:bob 2.5s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.banner{display:inline-block;max-width:760px;background:#fff;border:4px solid #efa3b7;padding:15px 20px;border-radius:14px;font-size:clamp(17px,4vw,24px);font-weight:bold;box-shadow:0 10px 25px #7d3c4b22}
+.choice{margin-top:18px}.no-wrap{display:inline-block}
+.celebrate{font-size:clamp(30px,8vw,70px);letter-spacing:4px}
+.confetti{position:fixed;top:-30px;pointer-events:none;animation:confetti 3.2s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes confetti{to{transform:translateY(110vh) rotate(900deg);opacity:0}}
+.sparkle{position:fixed;pointer-events:none;animation:pop .9s ease forwards}
+@keyframes pop{0%{transform:scale(.2);opacity:0}40%{transform:scale(1.4);opacity:1}100%{transform:translateY(-40px) scale(.7);opacity:0}}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);background:#5e2b3d;color:white;padding:10px 16px;border-radius:999px;opacity:0;transition:.35s;z-index:100;font-size:13px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#exportBtn{position:fixed;right:16px;bottom:16px;z-index:9999}
+</style>
+</head>
+<body>
+<div id="float"></div>
+<div id="toast" class="toast">Saved 💗</div>
+<button id="exportBtn" class="btn" onclick="exportWebsite()">💾 Save Website</button>
+
+<section class="screen active" id="s1">
+  <div class="center">
+    <h1>This is for u 💗</h1>
+    <div class="envelope-wrap" onclick="openEnvelope()" aria-label="Open envelope">
+      <div class="envelope" id="envelope"><div class="letter-peek"></div><div class="envelope-body"></div><div class="flap"></div><div class="seal">💛</div></div>
+    </div>
+    <div class="open-label">open it 💌</div>
+  </div>
+</section>
+
+<section class="screen" id="s2">
+ <div class="paper">
+  <div class="top-balloons"><i class="balloon yellow"></i><i class="balloon red"></i><i class="balloon orange"></i><i class="balloon green"></i></div>
+  <h2 class="edit" contenteditable="true" data-key="letterTitle">Dear you, 💗</h2>
+  <textarea id="letter" class="letterbox" placeholder="Write your letter here..."></textarea>
+  <div class="subtle">Tap anywhere in the heading to edit it. Use Save Website after editing to make your changes visible on other phones. 💌</div>
+  <div class="nav"><button class="btn" onclick="next(3)">Next →</button></div>
+ </div>
+</section>
+
+<section class="screen" id="s3">
+ <div class="paper">
+  <div class="top-balloons"><i class="balloon yellow"></i><i class="balloon red"></i><i class="balloon orange"></i><i class="balloon green"></i></div>
+  <h2 class="edit" contenteditable="true" data-key="galleryTitle">Our memories 📸</h2>
+  <p class="edit" contenteditable="true" data-key="galleryText">Add as many photos as you want, and write anything you like here. ✨</p>
+  <input id="galleryInput" type="file" accept="image/*" multiple>
+  <div id="gallery" class="gallery"></div>
+  <div class="nav"><button class="btn" onclick="next(4)">Next →</button></div>
+ </div>
+</section>
+
+<section class="screen" id="s4"><div class="center">
+ <h1>Little surprises for you 🎈</h1><p class="balloon-note">tap the balloon to open 💗</p>
+ <div class="big-row">
+  <div class="big-balloon yellow" onclick="openBalloon(0)">💛</div><div class="big-balloon red" onclick="openBalloon(1)">❤️</div>
+  <div class="big-balloon orange" onclick="openBalloon(2)">🧡</div><div class="big-balloon green" onclick="openBalloon(3)">💚</div>
+ </div>
+ <button class="btn" onclick="next(5)">Next →</button>
+</div></section>
+
+<section class="screen" id="b0"><div class="paper balloon-paper"><div class="top-balloons"><i class="balloon yellow"></i><i class="balloon red"></i><i class="balloon orange"></i></div><h2 class="btitle" style="margin-top:10px">Yellow balloon 💛</h2><div class="edit btext" contenteditable="true" data-b="0" style="min-height:300px;font-size:18px;line-height:1.75">Write your message here...
+💛</div><input class="binput" data-b="0" type="file" accept="image/*" multiple><div class="gallery bgallery" data-b="0"></div><div class="nav"><button class="btn light" onclick="next(4)">← Back to balloons</button></div></div></section>
+<section class="screen" id="b1"><div class="paper balloon-paper"><div class="top-balloons"><i class="balloon yellow"></i><i class="balloon red"></i><i class="balloon orange"></i></div><h2 class="btitle" style="margin-top:10px">Red balloon ❤️</h2><div class="edit btext" contenteditable="true" data-b="1" style="min-height:300px;font-size:18px;line-height:1.75">Write your message here...
+❤️</div><input class="binput" data-b="1" type="file" accept="image/*" multiple><div class="gallery bgallery" data-b="1"></div><div class="nav"><button class="btn light" onclick="next(4)">← Back to balloons</button></div></div></section>
+<section class="screen" id="b2"><div class="paper balloon-paper"><div class="top-balloons"><i class="balloon yellow"></i><i class="balloon red"></i><i class="balloon orange"></i></div><h2 class="btitle" style="margin-top:10px">Orange balloon 🧡</h2><div class="edit btext" contenteditable="true" data-b="2" style="min-height:300px;font-size:18px;line-height:1.75">Write your message here...
+🧡</div><input class="binput" data-b="2" type="file" accept="image/*" multiple><div class="gallery bgallery" data-b="2"></div><div class="nav"><button class="btn light" onclick="next(4)">← Back to balloons</button></div></div></section>
+<section class="screen" id="b3"><div class="paper balloon-paper"><div class="top-balloons"><i class="balloon yellow"></i><i class="balloon red"></i><i class="balloon orange"></i></div><h2 class="btitle" style="margin-top:10px">Light green balloon 💚</h2><div class="edit btext" contenteditable="true" data-b="3" style="min-height:300px;font-size:18px;line-height:1.75">Write your message here...
+💚</div><input class="binput" data-b="3" type="file" accept="image/*" multiple><div class="gallery bgallery" data-b="3"></div><div class="nav"><button class="btn light" onclick="next(4)">← Back to balloons</button></div></div></section>
+
+<section class="screen" id="s5"><div class="center">
+ <div class="cat">🐱</div><div class="banner">Will u go for a date and spend ur precious hours with me? 💗</div>
+ <div class="choice"><button class="btn" onclick="yes()">YES 🥹💗</button><span class="no-wrap"><button class="btn light" onclick="nope()">NO 🙈</button></span></div>
+</div></section>
+<section class="screen" id="no"><div class="center"><div class="cat">😿</div><h1>plss haan bol do 🥺</h1><p>no ka option hi nii hai 😭💗</p><button class="btn" onclick="next(5)">Okayyy 😭💗</button></div></section>
+<section class="screen" id="yes"><div class="center"><div class="cat">🐱</div><h1>Thankk uuu and I lovee uu baby 💗</h1><div class="celebrate">🎈 🎉 🎈 🥳 🎈 🎊 💕</div><p>You just made this little page very happy. 🥹</p></div></section>
+
+<script>
+const KEY="forYouCuteSite_v3";
+let current="s1";
+const ids=n=>n===4?"s4":n===5?"s5":"s"+n;
+
+function show(id){
+ document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+ const el=document.getElementById(id); if(el) el.classList.add("active");
+ current=id; window.scrollTo({top:0,behavior:"smooth"});
+}
+function next(n){show(typeof n==="string"?n:ids(n)); save();}
+function openEnvelope(){const e=document.getElementById("envelope");e.classList.add("open");setTimeout(()=>show("s2"),950)}
+function toast(t="Saved 💗"){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1400)}
+
+function save(){
+ const data={letter:document.getElementById("letter").value,editable:{},balloons:{}};
+ document.querySelectorAll("[contenteditable][data-key]").forEach(x=>data.editable[x.dataset.key]=x.innerHTML);
+ document.querySelectorAll(".btext").forEach(x=>data.balloons[x.dataset.b]=x.innerHTML);
+ localStorage.setItem(KEY,JSON.stringify(data));
+}
+function load(){
+ try{
+  const d=JSON.parse(localStorage.getItem(KEY)||"{}");
+  if(d.letter)document.getElementById("letter").value=d.letter;
+  Object.entries(d.editable||{}).forEach(([k,v])=>{const x=document.querySelector(`[data-key="${k}"]`);if(x)x.innerHTML=v});
+  Object.entries(d.balloons||{}).forEach(([k,v])=>{const x=document.querySelector(`.btext[data-b="${k}"]`);if(x)x.innerHTML=v});
+ }catch(e){}
+}
+document.addEventListener("input",()=>{clearTimeout(window.st);window.st=setTimeout(save,400)});
+
+function fileToDataURL(f){return new Promise((resolve,reject)=>{const rd=new FileReader();rd.onload=e=>resolve(e.target.result);rd.onerror=reject;rd.readAsDataURL(f)})}
+async function addImages(input,container,key){
+ for(const f of input.files){
+  const src=await fileToDataURL(f);
+  const img=document.createElement("img");img.src=src;container.appendChild(img);
+  const arr=JSON.parse(localStorage.getItem(key)||"[]");arr.push(src);localStorage.setItem(key,JSON.stringify(arr));
+ }
+ toast("Photo added 💗");
+}
+async function restoreImages(key,container){
+ try{for(const src of JSON.parse(localStorage.getItem(key)||"[]")){const img=document.createElement("img");img.src=src;container.appendChild(img)}}catch(e){}
+}
+document.getElementById("galleryInput").addEventListener("change",e=>addImages(e.target,document.getElementById("gallery"),"galleryPhotos"));
+document.querySelectorAll(".binput").forEach(inp=>inp.addEventListener("change",e=>{
+ const b=e.target.dataset.b;addImages(e.target,document.querySelector(`.bgallery[data-b="${b}"]`),"balloonPhotos"+b);
+}));
+
+function openBalloon(i){show("b"+i)}
+function nope(){show("no")}
+function yes(){show("yes");burst()}
+function burst(){
+ for(let i=0;i<65;i++){
+  const s=document.createElement("span");s.className="confetti";s.textContent=["🎈","🎉","💕","✨","🥳","💗"][Math.floor(Math.random()*6)];
+  s.style.left=Math.random()*100+"vw";s.style.fontSize=(16+Math.random()*24)+"px";s.style.animationDelay=(Math.random()*.8)+"s";document.body.appendChild(s);
+  setTimeout(()=>s.remove(),4000);
+ }
+ for(let i=0;i<18;i++){
+  const s=document.createElement("span");s.className="sparkle";s.textContent="✨";s.style.left=(10+Math.random()*80)+"vw";s.style.top=(20+Math.random()*60)+"vh";document.body.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+ }
+}
+function makeHearts(){
+ const holder=document.getElementById("float");
+ for(let i=0;i<13;i++){
+  const h=document.createElement("span");h.className="heart";h.textContent=["♡","♥","✦"][i%3];
+  h.style.left=Math.random()*100+"vw";h.style.animationDuration=(8+Math.random()*9)+"s";h.style.animationDelay=(-Math.random()*12)+"s";holder.appendChild(h);
+ }
+}
+
+/* NEW: makes a complete portable copy containing the current text and photos. */
+async function exportWebsite(){
+ save();
+ const clone=document.documentElement.cloneNode(true);
+
+ const srcLetter=document.getElementById("letter");
+ const outLetter=clone.querySelector("#letter");
+ if(srcLetter && outLetter) outLetter.textContent=srcLetter.value;
+
+ /* Copy all currently displayed images. Their data: URLs are embedded in the file. */
+ document.querySelectorAll("img").forEach((img,i)=>{
+   const target=clone.querySelectorAll("img")[i];
+   if(target) target.setAttribute("src",img.src);
+ });
+
+ /* Remove the editor-only export button from the portable copy. */
+ const outButton=clone.querySelector("#exportBtn");
+ if(outButton) outButton.remove();
+
+ /* Prevent the exported copy from replacing embedded content with empty localStorage. */
+ const portableScript=clone.querySelector("script");
+ if(portableScript){
+   portableScript.textContent=portableScript.textContent.replace(
+     'window.addEventListener("load",()=>{load();makeHearts()});',
+     'window.addEventListener("load",()=>{makeHearts()});'
+   ).replace(
+     'window.addEventListener("load",()=>{\n  restoreImages("galleryPhotos",document.getElementById("gallery"));\n  document.querySelectorAll(".bgallery").forEach(x=>restoreImages("balloonPhotos"+x.dataset.b,x));\n});',
+     'window.addEventListener("load",()=>{});'
+   );
+ }
+
+ const output="<!doctype html>\n"+clone.outerHTML;
+ const blob=new Blob([output],{type:"text/html;charset=utf-8"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="index.html";document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+ toast("New website file created 💗");
+}
+
+window.addEventListener("load",()=>{load();makeHearts()});
+window.addEventListener("load",()=>{
+ restoreImages("galleryPhotos",document.getElementById("gallery"));
+ document.querySelectorAll(".bgallery").forEach(x=>restoreImages("balloonPhotos"+x.dataset.b,x));
+});
+</script>
+</body>
+</html>
